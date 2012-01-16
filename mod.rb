@@ -50,4 +50,18 @@ module ProcessModule
 		end
 		@list = @newlist
 	end
+	def sort_by_smallest_at
+		@newlist = []	
+		(0..n-1).each do |v|
+			remaining_ps = @list - @newlist
+			smallest_arrival_time = remaining_ps[0]
+			(0..remaining_ps.length-1).each do |i|
+				if smallest_arrival_time.at > remaining_ps[i].at
+					smallest_arrival_time = remaining_ps[i]
+				end
+			end
+			@newlist.push smallest_arrival_time
+		end
+		@list = @newlist
+	end
 end
