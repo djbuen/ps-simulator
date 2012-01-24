@@ -4,7 +4,7 @@ class Processs
     @id = rand(1000)
     @bt = rand(20)
     @tt = @wt = @te = 0
-		@at = nil
+    @at = nil
  end
 end
 

@@ -4,13 +4,18 @@ require 'mod'
 class RR
 	include ProcessModule
 	attr_accessor :time_quantum,:jobs,:timeline
-	def initialize n=5, ts=5
+	def initialize n=5, ts=5,at=true
 		@ps = []
 		@timeline = []
 		@time_quantum = ts
 		@n = n
 		@att = @awt = 0
 		get_processes
+		if not at
+		  (0..@list.length-1).each do |i|
+				@list[i].at = 0
+			end	
+		end
 		@jobs = Hash.new
 		@list.each do |ps|
 			@jobs[ps.id] = { "process" => ps , "remaining_time" => ps.bt }
@@ -40,6 +45,7 @@ class RR
 				@list.push key
 			end
 		compute_time
+		compute_wt
 	end
 
 	private
@@ -65,14 +71,12 @@ class RR
 			rtime = @timeline.reverse
 			te = 0
 			p = rt.shift
-			arr = []
 			until p == nil 
 				te = @timeline.length-1
 				(0..(@timeline.length)-1).each do |i|
 					if p == rtime[i] 
 					 	@jobs[p]["process"].te = te
 						@jobs[p]["process"].tt = te - @jobs[p]["process"].at
-						arr << te	
 						p = rt.shift
 						break
 					end
@@ -82,7 +86,6 @@ class RR
 		end
 		def compute_wt
 			rt = @timeline.uniq
-			pid = rt[0]
 				@timeline.each_with_index do |v,i|
 						(rt-[v]).each do |p|
 							if i <= @jobs[p]["process"].te	
@@ -90,8 +93,11 @@ class RR
 							end
 						end		
 				end
-			@rt.each do |pid|
-				@jobs[p]["process"].wt -= @jobs[p]["process"].at
+			rt.each do |pid|
+				unless @jobs[pid]["process"].wt == 0
+					@jobs[pid]["process"].wt -= 1 
+				end
+				@jobs[pid]["process"].wt -= @jobs[pid]["process"].at
 			end
 		end
 end
