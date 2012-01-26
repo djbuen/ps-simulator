@@ -105,4 +105,14 @@ module ProcessModule
 			end
 		end
 	end
+	def compute_wt
+		@jobs.each do |k,v|
+			@jobs[k]["process"].wt = v["process"].tt - v["process"].bt
+		end
+	end
+	def table
+		@jobs.each do |k,v|
+			puts v["process"].inspect 
+		end
+	end
 end
